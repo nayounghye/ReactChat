@@ -17,7 +17,7 @@ export default function Chat({ chat, isFirst, isLast, userId }) {
     <>
       {/* 컴포넌트화한 이유 : 공지와 채팅리스트가 ui가 다르므로 분리함! */}
       {isFirst && chat.type === 'other' && (
-        <div className="user-id">{userId}</div>
+        <div className="user-id">{chat.userId}</div>
       )}
       {/* 'other-chat'의 첫 번째 메시지에만 userId 표시 */}
       {/* isFirst가 true일 때만 userId 표시 */}

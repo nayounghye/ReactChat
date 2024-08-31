@@ -20,7 +20,7 @@ const userIdArr = {};
 // { key : value }형태로 저장이 된다 -> {"socket.id": "user.id"}
 // {"socket.id": "user.id"}
 
-// 실습 5 : DM기능을 위한 현재 채팅방 인원
+// DM기능을 위한 현재 채팅방 리스트!
 const updateUserList = () => {
   io.emit('userList', userIdArr);
 };
@@ -62,16 +62,16 @@ io.on('connection', (socket) => {
       updateUserList();
     }
     console.log(userIdArr);
-    //   실습 3-3 : 퇴장 시키기
+    // 퇴장 메시지
     socket.on('disconnect', () => {
       io.emit('notice', { msg: `${userIdArr[socket.id]}님이 퇴장하셨습니다.` });
       delete userIdArr[socket.id];
-      console.log(userIdArr);
+      // console.log(userIdArr);
       updateUserList();
     });
   });
 
-  // 실습 4 : 채팅창 메시지 전송
+  // 채팅창 메시지 전송
   socket.on('sendMsg', (res) => {
     if (res.dm === 'all')
       io.emit('chat', { userId: res.userId, msg: res.msg, time: messageTime });

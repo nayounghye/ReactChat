@@ -40,6 +40,8 @@ export default function Chatting() {
   useEffect(() => {
     socket.on('error', (res) => {
       alert(res.msg);
+      setUserId(null);
+      setUserIdInput('');
     });
 
     socket.on('entrySuccess', (res) => {
@@ -113,9 +115,17 @@ export default function Chatting() {
   };
 
   // 채팅 목록을 변환하고 isFirstOfType 속성을 추가
-  const enhancedChatList = chatList.reduce((acc, chat, i, arr) => {
-    let isFirst = i === 0 || arr[i - 1].type !== chat.type;
-    let isLast = i === arr.length - 1 || arr[i + 1].type !== chat.type;
+  let enhancedChatList = chatList.reduce((acc, chat, i, arr) => {
+    const prevChat = arr[i - 1];
+    const nextChat = arr[i + 1];
+
+    // 현재 메시지가 이전 메시지와 같은 사용자로부터 왔는지 확인
+    let isFirst = !prevChat || prevChat.userId !== chat.userId;
+    let isLast = !nextChat || nextChat.userId !== chat.userId;
+
+    //   기존
+    //   let isFirst = i === 0 || arr[i - 1].type !== chat.type;
+    //   let isLast = i === arr.length - 1 || arr[i + 1].type !== chat.type;
     acc.push({
       ...chat,
       isFirst,
