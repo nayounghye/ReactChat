@@ -189,7 +189,7 @@ html {
 .send-container {
   width: 320px;
   height: 50px;
-  padding: 5px;
+  padding: 0px 7px 0px 7px;
   display: flex;
   justify-content: space-between;
   background-color: black;
