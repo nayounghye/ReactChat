@@ -36,20 +36,12 @@ app.get('/', function (req, res) {
 io.on('connection', (socket) => {
   console.log('socket.id : ', socket.id);
 
-  // on을 이용해, 클라이언트에서 socket을 이용해서 보내준 데이터를 받을 이벤트를 등록함.
-  socket.on('hello', (res) => {
-    // res에선 클라이언트에서 socket을 이용해 보내준 데이터를 받아온다.
-    console.log(res);
-    // 클라이언트로 bye를 보냄.
-    socket.emit('bye', { msg: '죠바!' });
-  });
-
   // 서버에서 io객체를 사용하면 클라이언트들 전체를 대상으로 하는 것!
   socket.on('entry', (res) => {
     console.log('entry : ', res);
     // 닉네임을 등록 후 클라이언트로 성공 메세지를 보냄
     socket.emit('entrySuccess', { userId: res.userId });
-    // 전체 클라이언트를 대상으로 데이터를 보낼 땐 io.meit 사용
+    // 전체 클라이언트를 대상으로 데이터를 보낼 땐 io.emit 사용
     // io.emit('notice', { msg: `${socket.id}님이 입장했습니다.` });
     if (Object.values(userIdArr).includes(res.userId)) {
       // 닉네임이 중복될 경우
@@ -64,10 +56,15 @@ io.on('connection', (socket) => {
     console.log(userIdArr);
     // 퇴장 메시지
     socket.on('disconnect', () => {
-      io.emit('notice', { msg: `${userIdArr[socket.id]}님이 퇴장하셨습니다.` });
-      delete userIdArr[socket.id];
-      // console.log(userIdArr);
-      updateUserList();
+      const userId = userIdArr[socket.id];
+      if (userId) {
+        io.emit('notice', {
+          msg: `${userIdArr[socket.id]}님이 퇴장하셨습니다.`,
+        });
+        delete userIdArr[socket.id];
+        // console.log(userIdArr);
+        updateUserList();
+      }
     });
   });
 
